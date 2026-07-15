@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TEAM LOGIN</title><link rel="manifest" href="manifest.json">
+<style>body{background:#111;color:white;display:flex;justify-content:center;align-items:center;height:100vh;margin:0}.box{background:#222;padding:30px;border-radius:15px;width:90%;max-width:400px} input,select,button{width:100%;padding:14px;margin:8px 0;border-radius:8px;border:none;font-size:16px} button{background:#FF6600;color:white;font-weight:bold}</style></head>
+<body><div class="box"><h2 style="text-align:center">TEAM LOGIN</h2>
+<input id="phone" placeholder="Employee Phone">
+<input id="tpass" type="password" placeholder="Password: vaishnav123">
+<select id="role">
+  <option value="ADMIN">CEO / MD / ADMIN</option>
+  <option value="MANAGER">MANAGER</option>
+  <option value="DELIVERY">DELIVERY BOY</option>
+  <option value="SUPPORT">SUPPORT</option>
+</select>
+<button onclick="login()">LOGIN</button><p style="font-size:12px;text-align:center">15min Auto Logout</p></div>
+<script>
+function login(){
+  if(tpass.value=='vaishnav123'){
+    localStorage.setItem('role', role.value);
+    localStorage.setItem('teamLogin','true');
+    localStorage.setItem('loginTime', Date.now());
+    location.href='dashboard.html';
+  } else{ alert("Galat Password"); }
+}
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js'); }
+</script></body></html>
