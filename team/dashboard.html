@@ -1,0 +1,91 @@
+<!DOCTYPE html><html lang="hi"><head><meta charset="UTF-8"><title>TEAM PANEL</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage-compat.js"></script>
+<style>body{background:#111;color:white;padding:15px}.logout{background:red;position:fixed;top:10px;right:10px;width:auto;padding:8px 15px;border:none;border-radius:8px;color:white}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:#FF6600;padding:15px;border-radius:10px;text-align:center}.card{background:#222;padding:15px;border-radius:10px;margin:10px 0} input,select,button{padding:12px;border-radius:8px;border:none;margin:5px 0;width:100%} button{background:#FF6600;color:white;font-weight:bold} img{width:100px;border-radius:8px}</style></head>
+<body>
+<button class="logout" onclick="logout()">LOGOUT</button>
+<h2 id="roleTitle">DASHBOARD</h2>
+
+<div class="stats">
+  <div class="stat"><p>Total Orders</p><h2 id="totalOrders">0</h2></div>
+  <div class="stat"><p>Pending</p><h2 id="pendingOrders">0</h2></div>
+</div>
+
+<div class="card">
+  <h3>ADD PRODUCT</h3>
+  <select id="ptype"><option value="local">Local Product</option><option value="affiliate">Amazon Affiliate</option></select>
+  <input id="pname" placeholder="Product Naam">
+  <input id="pprice" placeholder="Rate" type="number">
+  <input id="plink" placeholder="Amazon Link - only for Affiliate">
+  <input type="file" id="pphoto" accept="image/*">
+  <img id="preview" style="display:none">
+  <button onclick="addProduct()">UPLOAD PRODUCT</button>
+  <p id="status"></p>
+</div>
+
+<div class="card">
+  <h3>UPLOADED PRODUCTS</h3>
+  <div id="productList"></div>
+</div>
+
+<div class="card" id="dutyCard">
+  <h3>EMPLOYEE ATTENDANCE</h3>
+  <button onclick="markDuty('IN')">DUTY ON - SELFIE</button>
+  <button onclick="markDuty('OUT')">DUTY OFF - SELFIE</button>
+  <input type="file" id="dutySelfie" accept="image/*" capture="camera">
+</div>
+
+<div class="card">
+  <h3>LIVE ORDERS 🔔</h3>
+  <div id="orders"></div>
+</div>
+
+<audio id="notifSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<script>
+const firebaseConfig = { apiKey:"AIzaSyBCT3-0lITy39_ZVJKXUodwDOwHvWS2MKc", authDomain:"vaishnav-mall.firebaseapp.com", projectId:"vaishnav-mall", storageBucket:"vaishnav-mall.firebasestorage.app" };
+firebase.initializeApp(firebaseConfig); const db=firebase.firestore(); const storage=firebase.storage();
+
+let role = localStorage.getItem('role');
+roleTitle.innerText = role + " DASHBOARD";
+if(role == 'CEO' || role == 'MD' || role == 'ADMIN'){ dutyCard.style.display='none'; }
+
+if(!localStorage.getItem('teamLogin')) location.href='index.html';
+if(Date.now() - localStorage.getItem('loginTime') > 15*60*1000) logout();
+function logout(){ localStorage.clear(); location.href='index.html'; }
+
+pphoto.onchange = e => { preview.style.display='block'; preview.src = URL.createObjectURL(e.target.files[0]); }
+
+async function addProduct(){
+  status.innerText = "Upload ho raha hai...";
+  let file=pphoto.files[0]; let ref=storage.ref('products/'+Date.now()+file.name);
+  let snap=await ref.put(file); let url=await snap.ref.getDownloadURL();
+  db.collection("products").add({name:pname.value,price:pprice.value,photo:url,type:ptype.value,link:plink.value || ""});
+  status.innerText = "Product Added!"; pname.value='';pprice.value='';plink.value='';preview.style.display='none';
+}
+
+db.collection("products").onSnapshot(s=>productList.innerHTML=s.docs.map(d=>`<div style="background:#333;padding:8px;margin:5px 0;border-radius:8px;display:flex;gap:8px"><img src="${d.data().photo}" style="width:60px"><div><p>${d.data().name}</p><p>₹${d.data().price} - ${d.data().type}</p></div>${role=='ADMIN'?`<button style="background:red" onclick="db.collection('products').doc('${d.id}').delete()">X</button>`:''}</div>`).join(''));
+
+async function markDuty(status){
+  let file=dutySelfie.files[0];
+  if(!file){ alert("Selfie lo pehle"); return; }
+  let ref=storage.ref('attendance/'+role+'/'+Date.now()+'.jpg');
+  await ref.put(file);
+  db.collection("attendance").add({role:role,status:status,time:new Date()});
+  alert("Duty "+status+" Marked");
+}
+
+let lastCount=0;
+db.collection("orders").orderBy("time","desc").onSnapshot(s=>{
+  if(s.docs.length > lastCount && role!='SUPPORT'){ notifSound.play(); navigator.vibrate(200); }
+  lastCount = s.docs.length;
+  let total=0,pending=0;
+  orders.innerHTML=s.docs.map(d=>{
+    let data=d.data(); let orderTotal=data.items.reduce((sum,i)=>sum+Number(i.price),0);
+    total++; if(data.status=="New") pending++;
+    return `<div style="background:#333;padding:10px;margin:5px 0;border-radius:8px"><p><b>Phone:</b> ${data.phone}</p><p><b>Address:</b> ${data.address}</p><p><b>Total:</b> ₹${orderTotal}</p><p><b>Status:</b> ${data.status}</p><p><b>OTP:</b> ${data.deliveryOTP}</p>${data.status=="New" && role!='SUPPORT'? `<button onclick="deliverOrder('${d.id}')">DELIVERED</button>` : "Delivered ✅"}</div>`
+  }).join('');
+  totalOrders.innerText=total; pendingOrders.innerText=pending;
+});
+function deliverOrder(id){ let otp=prompt("Customer se OTP pucho"); db.collection("orders").doc(id).get().then(doc=>{ if(doc.data().deliveryOTP==otp){db.collection("orders").doc(id).update({status:"Delivered"});} else{alert("Galat OTP");} }); }
+</script></body></html>
