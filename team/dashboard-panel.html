@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>VAISHNAV TEAM PANEL</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:sans-serif;background:#f4f4f4;padding:10px;margin:0}
+.header{background:#222;color:white;padding:10px;display:flex;justify-content:space-between}
+.box{background:white;padding:15px;margin:10px 0;border-radius:10px;box-shadow:0 2px 5px #ccc}
+button{background:#28a745;color:white;border:none;padding:10px 15px;border-radius:5px;margin:5px 2px}
+input,file,select{width:95%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:5px}
+h2{color:#222;margin:0}
+h3{border-bottom:2px solid #28a745;padding-bottom:5px}
+.hidden{display:none}
+.red{background:red}
+.blue{background:#007bff}
+</style>
+</head>
+<body>
+
+<div class="header">
+<h2>Welcome: <span id="roleName"></span></h2>
+<button onclick="logout()" class="red">Logout</button>
+</div>
+
+<!-- 1. ATTENDANCE - SABKE LIYE -->
+<div class="box">
+<h3>📸 Duty Attendance</h3>
+<input type="file" id="selfie" accept="image/*" capture="camera">
+<button onclick="dutyIn()">DUTY IN</button>
+<button onclick="dutyOut()" class="red">DUTY OFF</button>
+<p id="workHour"><b>Working Hours:</b> 00:00</p>
+</div>
+
+<!-- 2. PRODUCT TEAM - 5 EMPLOYEE -->
+<div class="box hidden" id="productTeam">
+<h3>🛒 Product + Shop Team</h3>
+<h4>Add Shop</h4>
+<input id="shopName" placeholder="Shop Name">
+<select id="shopCat"><option>Hotel</option><option>Grocery</option><option>Fashion</option><option>Electronics</option></select>
+<button onclick="addShop()">ADD SHOP</button>
+
+<h4>Add Product</h4>
+<input id="pName" placeholder="Product Name">
+<input id="pPrice" placeholder="Rate Making - ₹">
+<textarea id="pDetail" placeholder="Product Details"></textarea>
+<input id="pPhoto" type="file">
+<button onclick="saveProduct()">SAVE PRODUCT</button>
+
+<h4>Affiliation</h4>
+<button class="blue">AZMON AFFILIATION</button>
+<button class="blue">Amazon Frontline Store</button>
+</div>
+
+<!-- 3. OPERATION TEAM - 6 EMPLOYEE -->
+<div class="box hidden" id="operationTeam">
+<h3>📦 Operation Team</h3>
+<button>📞 Order Confirm</button>
+<button>📍 Local Market Update</button>
+<button>📊 Stock Update</button>
+<button>🎧 Help Desk / Refund / Replace</button>
+<button>💬 Public Chat/Email/Comments</button>
+<button>🚚 Delivery Boy Panel</button>
+<h4>Live Shoppers Homepage</h4>
+<iframe src="../customer/" style="width:100%;height:250px;border:1px solid #ccc"></iframe>
+</div>
+
+<!-- 4. CEO PANEL -->
+<div class="box hidden" id="ceoPanel">
+<h3>👑 CEO + MD + OWNER CONTROL</h3>
+<p><b>Pending Work:</b> 12</p>
+<p><b>Current Work:</b> 8</p>
+<p><b>Upcoming Work:</b> 5</p>
+<p><b>Total Employees Online:</b> 7</p>
+<button class="blue">View All Employee Activity</button>
+<button class="blue">Full Reports & Analytics</button>
+</div>
+
+<script>
+let role = localStorage.getItem('role');
+if(!role){ location.href='dashboard.html'; }
+document.getElementById('roleName').innerText = role;
+
+// Role ke hisaab se show
+if(role == "PRODUCT_TEAM"){ document.getElementById('productTeam').classList.remove('hidden'); }
+if(role == "OPERATION_TEAM"){ document.getElementById('operationTeam').classList.remove('hidden'); }
+if(role == "CEO" || role == "MD" || role == "OWNER"){ 
+  document.getElementById('productTeam').classList.remove('hidden');
+  document.getElementById('operationTeam').classList.remove('hidden');
+  document.getElementById('ceoPanel').classList.remove('hidden');
+}
+
+function logout(){ localStorage.clear(); location.href='dashboard.html'; }
+function dutyIn(){ alert("Duty IN Selfie Uploaded ✅ Working Started"); }
+function dutyOut(){ alert("Duty OFF Selfie Uploaded ✅ Working Stopped"); }
+function addShop(){ if(document.getElementById('shopName').value==""){alert("Shop Name daalo")}else{alert("Shop Added ✅")} }
+function saveProduct(){ if(document.getElementById('pName').value==""){alert("Product Name daalo")}else{alert("Product Saved ✅")} }
+</script>
+</body>
+</html>
