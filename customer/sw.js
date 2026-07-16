@@ -1,4 +1,6 @@
 self.addEventListener('install', e => {
-  console.log('VAISHNAV - Digital Mall App Installed');
+  e.waitUntil(caches.open('v11').then(c => c.addAll(['index.html','app.js'])));
 });
-self.addEventListener('fetch', e => {});
+self.addEventListener('fetch', e => {
+  e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
+});
