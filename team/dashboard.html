@@ -1,120 +1,43 @@
 <!DOCTYPE html>
-<html lang="hi">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Team Panel - Vaishnav Mall</title>
-<script src="https://cdn.tailwindcss.com"></script>
+<title>VAISHNAV TEAM LOGIN</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; }
-  .card { background: #1e293b; border: 1px solid #334155; }
+body{font-family:sans-serif;background:#222;color:white;display:flex;justify-content:center;align-items:center;height:100vh}
+.box{background:#333;padding:25px;border-radius:10px;width:90%;max-width:350px}
+input,select{width:95%;padding:10px;margin:8px 0;border:none;border-radius:5px}
+button{background:#28a745;color:white;border:none;padding:12px;width:100%;border-radius:5px;font-size:16px}
 </style>
 </head>
-<body class="p-4 md:p-8">
-
-<h1 class="text-3xl font-bold mb-6">🏪 Team Dashboard</h1>
-
-<div id="loginBox" class="card p-6 rounded-xl max-w-md mx-auto">
-  <h2 class="text-xl font-bold mb-4">Login</h2>
-  <input id="loginPhone" type="text" placeholder="Phone" class="w-full p-2 mb-3 rounded bg-slate-700">
-  <input id="loginPass" type="password" placeholder="Password" class="w-full p-2 mb-3 rounded bg-slate-700">
-  <button onclick="login()" class="w-full bg-blue-600 p-2 rounded font-bold">LOGIN</button>
+<body>
+<div class="box">
+<h2>VAISHNAV TEAM PANEL</h2>
+<input id="phone" placeholder="Phone Number" value="9303100358">
+<input id="pass" type="password" placeholder="Password" value="admin7">
+<select id="role">
+  <option>PRODUCT_TEAM</option>
+  <option>OPERATION_TEAM</option>
+  <option>CEO</option>
+  <option>MD</option>
+  <option>OWNER</option>
+</select>
+<button onclick="login()">LOGIN</button>
 </div>
 
-<div id="dashboard" class="hidden">
-  <div class="card p-6 rounded-xl mb-6">
-    <h2 class="text-xl font-bold mb-4">➕ Add Product</h2>
-    <input id="pName" placeholder="Product Name" class="w-full p-2 mb-3 rounded bg-slate-700">
-    <input id="pPrice" type="number" placeholder="Price" class="w-full p-2 mb-3 rounded bg-slate-700">
-    <input id="pPhoto" type="file" accept="image/*" class="w-full p-2 mb-3 rounded bg-slate-700">
-    <button onclick="addProduct()" class="w-full bg-green-600 p-2 rounded font-bold">SAVE PRODUCT</button>
-    <p id="uploadStatus" class="text-sm mt-2 text-green-400"></p>
-  </div>
-
-  <div class="card p-6 rounded-xl">
-    <h2 class="text-xl font-bold mb-4">📦 Live Orders <span id="beep" class="text-red-500"></span></h2>
-    <div id="ordersList">Loading...</div>
-  </div>
-</div>
-
-<audio id="beepSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-  // 1. APNA FIREBASE CONFIG YAHI DAAL
-  const firebaseConfig = {
-    apiKey: "TERA_API_KEY",
-    authDomain: "TERA_PROJECT.firebaseapp.com",
-    projectId: "TERA_PROJECT_ID",
-    storageBucket: "TERA_PROJECT.appspot.com",
-    messagingSenderId: "123",
-    appId: "1:123:web:abc"
-  };
+<script>
+function login(){
+  let phone = document.getElementById('phone').value;
+  let pass = document.getElementById('pass').value;
+  let role = document.getElementById('role').value;
   
-  // 2. TERA CLOUDINARY - READY
-  const CLOUD_NAME = "y8tndsz0"; 
-  const UPLOAD_PRESET = "mall_upload";
-
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  let lastOrderCount = 0;
-
-  async function uploadToCloudinary(file) {
-    document.getElementById('uploadStatus').innerText = "Uploading photo...";
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
-
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
-      method: "POST",
-      body: formData
-    });
-    const data = await res.json();
-    document.getElementById('uploadStatus').innerText = "Photo uploaded ✅";
-    return data.secure_url;
+  if(phone == "9303100358" && pass == "admin7"){
+    localStorage.setItem('role', role);
+    location.href = 'dashboard-panel.html';
+  } else {
+    alert("Galat Phone ya Password");
   }
-
-  window.login = function() {
-    document.getElementById('loginBox').classList.add('hidden');
-    document.getElementById('dashboard').classList.remove('hidden');
-    loadOrders();
-  }
-
-  window.addProduct = async function() {
-    const name = document.getElementById('pName').value;
-    const price = document.getElementById('pPrice').value;
-    const file = document.getElementById('pPhoto').files[0];
-    if(!name || !price || !file) return alert("Sab bharo");
-    
-    const photoURL = await uploadToCloudinary(file);
-    
-    await addDoc(collection(db, "products"), {
-      name, price: Number(price), photo: photoURL, createdAt: Date.now()
-    });
-    alert("Product Added!");
-    document.getElementById('pName').value = "";
-    document.getElementById('pPrice').value = "";
-    document.getElementById('pPhoto').value = "";
-    document.getElementById('uploadStatus').innerText = "";
-  }
-
-  function loadOrders() {
-    onSnapshot(collection(db, "orders"), (snapshot) => {
-      if(snapshot.size > lastOrderCount && lastOrderCount !== 0) {
-        document.getElementById('beepSound').play();
-        document.getElementById('beep').innerText = "🔔 NEW ORDER!";
-      }
-      lastOrderCount = snapshot.size;
-      let html = "";
-      snapshot.forEach(docSnap => {
-        const o = docSnap.data();
-        html += `<div class="p-3 mb-2 bg-slate-800 rounded"><b>Order ID:</b> ${docSnap.id} <br><b>Customer:</b> ${o.phone} <br><b>Status:</b> ${o.status}</div>`;
-      });
-      document.getElementById('ordersList').innerHTML = html || "No orders yet";
-    });
-  }
+}
 </script>
 </body>
 </html>
