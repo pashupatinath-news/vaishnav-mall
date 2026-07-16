@@ -8,7 +8,7 @@ body{font-family:sans-serif;background:#f4f4f4;padding:10px;margin:0}
 .header{background:#222;color:white;padding:10px;display:flex;justify-content:space-between}
 .box{background:white;padding:15px;margin:10px 0;border-radius:10px;box-shadow:0 2px 5px #ccc}
 button{background:#28a745;color:white;border:none;padding:10px 15px;border-radius:5px;margin:5px 2px}
-input,file,select{width:95%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:5px}
+input,file,select,textarea{width:95%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:5px}
 h2{color:#222;margin:0}
 h3{border-bottom:2px solid #28a745;padding-bottom:5px}
 .hidden{display:none}
@@ -62,7 +62,7 @@ h3{border-bottom:2px solid #28a745;padding-bottom:5px}
 <button>💬 Public Chat/Email/Comments</button>
 <button>🚚 Delivery Boy Panel</button>
 <h4>Live Shoppers Homepage</h4>
-<iframe src="../customer/" style="width:100%;height:250px;border:1px solid #ccc"></iframe>
+<iframe src="https://pashupatinath-news.github.io/vaishnav-mall/customer/" style="width:100%;height:250px;border:1px solid #ccc"></iframe>
 </div>
 
 <!-- 4. CEO PANEL -->
@@ -81,7 +81,6 @@ let role = localStorage.getItem('role');
 if(!role){ location.href='dashboard.html'; }
 document.getElementById('roleName').innerText = role;
 
-// Role ke hisaab se show
 if(role == "PRODUCT_TEAM"){ document.getElementById('productTeam').classList.remove('hidden'); }
 if(role == "OPERATION_TEAM"){ document.getElementById('operationTeam').classList.remove('hidden'); }
 if(role == "CEO" || role == "MD" || role == "OWNER"){ 
