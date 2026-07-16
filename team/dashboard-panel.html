@@ -7,7 +7,7 @@
 body{font-family:sans-serif;background:#f4f4f4;padding:10px;margin:0}
 .header{background:#222;color:white;padding:10px;display:flex;justify-content:space-between}
 .box{background:white;padding:15px;margin:10px 0;border-radius:10px;box-shadow:0 2px 5px #ccc}
-button{background:#28a745;color:white;border:none;padding:10px 15px;border-radius:5px;margin:5px 2px}
+button{background:#28a745;color:white;border:none;padding:10px 15px;border-radius:5px;margin:5px 2px;cursor:pointer}
 input,file,select,textarea{width:95%;padding:8px;margin:5px 0;border:1px solid #ccc;border-radius:5px}
 h2{color:#222;margin:0}
 h3{border-bottom:2px solid #28a745;padding-bottom:5px}
@@ -19,8 +19,8 @@ h3{border-bottom:2px solid #28a745;padding-bottom:5px}
 <body>
 
 <div class="header">
-<h2>Welcome: <span id="roleName"></span></h2>
-<button onclick="logout()" class="red">Logout</button>
+<h2>Welcome: <span id="roleName">Guest</span></h2>
+<button onclick="logout()" class="red" id="logoutBtn">Logout</button>
 </div>
 
 <!-- 1. ATTENDANCE - SABKE LIYE -->
@@ -76,18 +76,41 @@ h3{border-bottom:2px solid #28a745;padding-bottom:5px}
 <button class="blue">Full Reports & Analytics</button>
 </div>
 
-<script>
-let role = localStorage.getItem('role');
-if(!role){ location.href='dashboard.html'; }
-document.getElementById('roleName').innerText = role;
+<!-- 5. PUBLIC VIEW - BINA LOGIN -->
+<div class="box hidden" id="publicView">
+<h3>🛍️ Welcome to Vaishnav Mall</h3>
+<p>Products dekhne ke liye neeche jao. Order karne ke liye contact kare.</p>
+<iframe src="https://pashupatinath-news.github.io/vaishnav-mall/customer/" style="width:100%;height:500px;border:1px solid #ccc"></iframe>
+</div>
 
-if(role == "PRODUCT_TEAM"){ document.getElementById('productTeam').classList.remove('hidden'); }
-if(role == "OPERATION_TEAM"){ document.getElementById('operationTeam').classList.remove('hidden'); }
-if(role == "CEO" || role == "MD" || role == "OWNER"){ 
-  document.getElementById('productTeam').classList.remove('hidden');
-  document.getElementById('operationTeam').classList.remove('hidden');
-  document.getElementById('ceoPanel').classList.remove('hidden');
-}
+<script>
+// ===== LOGIN CHECK SYSTEM =====
+let role = localStorage.getItem('role');
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    if(!role){ 
+        // AGAR LOGIN NAHI HAI = PUBLIC MODE
+        document.getElementById('publicView').classList.remove('hidden');
+        document.getElementById('logoutBtn').style.display = 'none';
+        document.getElementById('roleName').innerText = 'Guest';
+    } else { 
+        // AGAR LOGIN HAI = TEAM MODE
+        document.getElementById('roleName').innerText = role;
+        
+        if(role == "PRODUCT_TEAM"){ 
+            document.getElementById('productTeam').classList.remove('hidden'); 
+        }
+        if(role == "OPERATION_TEAM"){ 
+            document.getElementById('operationTeam').classList.remove('hidden'); 
+        }
+        if(role == "CEO" || role == "MD" || role == "OWNER"){ 
+            document.getElementById('productTeam').classList.remove('hidden');
+            document.getElementById('operationTeam').classList.remove('hidden');
+            document.getElementById('ceoPanel').classList.remove('hidden');
+        }
+    }
+});
 
 function logout(){ localStorage.clear(); location.href='dashboard.html'; }
 function dutyIn(){ alert("Duty IN Selfie Uploaded ✅ Working Started"); }
