@@ -1,46 +1,93 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>VAISHNAV MALL - SHOP</title>
+<title>VAISHNAV - Digital Mall</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff5722">
 <style>
-body{font-family:sans-serif;background:#f4f4f4;margin:0}
-.header{background:#222;color:white;padding:15px;text-align:center;font-size:20px;position:sticky;top:0}
-.product{background:white;margin:10px;padding:15px;border-radius:10px;box-shadow:0 2px 5px #ccc}
-.product img{width:100%;height:180px;object-fit:cover;border-radius:8px}
-.price{color:green;font-weight:bold;font-size:18px}
-button{background:#ff5722;color:white;border:none;padding:10px;width:100%;border-radius:5px;font-size:16px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#f1f3f6}
+.topbar{background:#222;color:white;padding:12px;text-align:center;font-weight:bold;font-size:16px}
+.nav{display:flex;gap:10px;background:#ff5722;padding:8px 10px}
+.nav button{flex:1;background:#ff5722;color:white;border:none;padding:10px;border-radius:4px;font-weight:bold;font-size:14px}
+.sale{background:red;color:white;text-align:center;padding:6px;font-size:12px;font-weight:bold;letter-spacing:1px}
+.search{padding:10px;background:white}
+.search input{width:100%;padding:10px;border:1px solid #ddd;border-radius:20px;font-size:14px}
+.title{color:#ff5722;font-weight:bold;padding:12px 15px 5px;font-size:14px}
+.categories{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:5px 10px 15px}
+.cat{background:white;padding:12px 5px;border-radius:8px;text-align:center;font-size:11px;font-weight:bold;box-shadow:0 1px 2px rgba(0,0,0,0.1)}
+.section{background:white;margin:10px;border-radius:8px;padding:10px;box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+.product-row{display:flex;gap:10px;overflow-x:auto;padding-bottom:5px}
+.product{min-width:140px;background:#fff;border:1px solid #eee;border-radius:8px;padding:8px;text-align:center}
+.product img{width:100%;height:110px;object-fit:cover;border-radius:5px;margin-bottom:5px}
+.product p{font-size:12px;margin:3px 0}
+.price{color:#388e3c;font-weight:bold;font-size:13px}
+.chat{position:fixed;bottom:20px;right:20px;background:#25d366;width:55px;height:55px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:28px;box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.install-btn{background:#28a745;color:white;text-align:center;padding:8px;margin:5px 10px;border-radius:5px;font-weight:bold;display:none}
 </style>
 </head>
 <body>
 
-<div class="header">🛒 VAISHNAV MALL</div>
+<div class="topbar">VAISHNAV - DIGITAL MALL</div>
+<div id="installBox" class="install-btn" onclick="installApp()">📲 Install App</div>
 
-<div id="products">
-<p style="text-align:center">Loading Products...</p>
+<div class="nav">
+<button>LOGIN</button>
+<button>CART (0)</button>
 </div>
 
+<div class="sale">FLASH SALE ENDS IN: 2:59:51</div>
+
+<div class="search">
+<input placeholder="Search Product...">
+</div>
+
+<div class="title">8 CATEGORIES</div>
+<div class="categories">
+<div class="cat">Hotel & Food</div>
+<div class="cat">Grocery</div>
+<div class="cat">Fashion</div>
+<div class="cat">Education</div>
+<div class="cat">Jewellery</div>
+<div class="cat">Property</div>
+<div class="cat">Mobile & AC</div>
+<div class="cat">Amazon</div>
+</div>
+
+<div class="section">
+<div class="title">LOCAL PRODUCTS 🔥</div>
+<div class="product-row">
+  <div class="product"><img src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300"><p>Restaurant</p><p class="price">From ₹99</p></div>
+  <div class="product"><img src="https://images.unsplash.com/photo-1542838132-92c53300491e?w=300"><p>Grocery</p><p class="price">From ₹49</p></div>
+  <div class="product"><img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=300"><p>Fashion</p><p class="price">From ₹199</p></div>
+</div>
+</div>
+
+<div class="section">
+<div class="title">AMAZON DEALS 🛒</div>
+<div class="product-row">
+  <div class="product"><img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"><p>Mobile</p><p class="price">₹12999</p></div>
+  <div class="product"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"><p>Shoes</p><p class="price">₹2499</p></div>
+  <div class="product"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300"><p>Headphones</p><p class="price">₹999</p></div>
+</div>
+</div>
+
+<div class="chat">💬</div>
+
 <script>
-// Demo Products - Baad me Firebase se live aayenge
-let demoProducts = [
-  {name:"Samsung Galaxy M14", price:"₹12999", img:"https://via.placeholder.com/400x300/28a745/fff?text=Mobile", detail:"8GB RAM, 128GB, 5000mAh"},
-  {name:"Nike Air Max Shoes", price:"₹2499", img:"https://via.placeholder.com/400x300/007bff/fff?text=Shoes", detail:"Size: 7,8,9,10,11"},
-  {name:"Basmati Rice 5KG", price:"₹499", img:"https://via.placeholder.com/400x300/ff5722/fff?text=Grocery", detail:"Premium Quality"}
-];
-
-let html = '';
-demoProducts.forEach(p=>{
-html += `
-<div class="product">
-<img src="${p.img}">
-<h3>${p.name}</h3>
-<p>${p.detail}</p>
-<p class="price">${p.price}</p>
-<button onclick="alert('Added to Cart ✅')">ADD TO CART</button>
-</div>`
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBox').style.display = 'block';
 });
-document.getElementById('products').innerHTML = html;
+function installApp(){
+  deferredPrompt.prompt();
+}
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js');
+}
 </script>
-
 </body>
 </html>
