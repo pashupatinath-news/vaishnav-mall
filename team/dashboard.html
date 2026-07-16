@@ -24,19 +24,15 @@ button{background:#28a745;color:white;border:none;padding:12px;width:100%;border
 </select>
 <button onclick="login()">LOGIN</button>
 </div>
-
 <script>
 function login(){
   let phone = document.getElementById('phone').value;
   let pass = document.getElementById('pass').value;
   let role = document.getElementById('role').value;
-  
   if(phone == "9303100358" && pass == "admin7"){
     localStorage.setItem('role', role);
     location.href = 'dashboard-panel.html';
-  } else {
-    alert("Galat Phone ya Password");
-  }
+  } else { alert("Galat Phone ya Password"); }
 }
 </script>
 </body>
