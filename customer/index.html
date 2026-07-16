@@ -38,25 +38,23 @@
 
 <button class="cart-btn">🛒</button>
 
-<!-- FIREBASE SDK -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  // TODO: Yahan apna Firebase config daal dena
   const firebaseConfig = {
-    apiKey: "AIzaSyXXX",
+    apiKey: "AIzaSyBCt-8L1Y39_ZVJXKuoDOoWvW26MK",
     authDomain: "vaishnav-mall.firebaseapp.com",
     projectId: "vaishnav-mall",
     storageBucket: "vaishnav-mall.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "1:123456789:web:abc123"
+    messagingSenderId: "860038090103",
+    appId: "1:860038090103:web:69800f46e4a0976a672",
+    measurementId: "G-LSNWVC0B88"
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  // Firebase se product load
   async function loadProducts(){
     const querySnapshot = await getDocs(collection(db, "products"));
     const productList = document.getElementById('productList');
@@ -79,17 +77,10 @@
   loadProducts();
 </script>
 
-<!-- PWA SCRIPT -->
 <script>
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('sw.js');
 }
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  deferredPrompt = e;
-  console.log('Install App available');
-});
 </script>
 
 </body>
